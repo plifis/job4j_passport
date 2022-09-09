@@ -9,7 +9,7 @@ import ru.plifis.job4j_passport.model.PassportDto;
 import ru.plifis.job4j_passport.model.PassportEntity;
 
 @Component
-@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, componentModel = "spring")
 public interface PassportMapper {
     void updatePassportEntityFromDto(PassportDto dto, @MappingTarget PassportEntity entity);
 

@@ -16,37 +16,45 @@ import java.util.stream.Collectors;
 public class PassportService {
     private final PassportRepository passportRepository;
     private final PassportMapper passportMapper;
+    private final ConverterPassport converterPassport;
 
     @Autowired
     public PassportService(PassportRepository passportRepository,
-                           PassportMapper passportMapper) {
+                           PassportMapper passportMapper,
+                           ConverterPassport converterPassport) {
         this.passportRepository = passportRepository;
         this.passportMapper = passportMapper;
+        this.converterPassport = converterPassport;
     }
 
-    public List<PassportEntity> findPassportBySeries(Integer series) {
-        return passportRepository.findPassportEntityBySeries(series);
+    public List<PassportDto> findPassportBySeries(Integer series) {
+        return passportRepository.findPassportEntityBySeries(series).stream()
+                .map(converterPassport::convertPassportEntityToPassportDto).collect(Collectors.toList());
     }
 
-    public List<PassportEntity> findAllPassports() {
-        Collection<PassportEntity> rsl = passportRepository.findAll();
-        return rsl.stream().collect(Collectors.toList());
+    public List<PassportDto> findAllPassports() {
+        return passportRepository.findAll().stream()
+                .map(converterPassport::convertPassportEntityToPassportDto).collect(Collectors.toList());
     }
 
-    public List<PassportEntity> findAllUnavailablePassports() {
+    public List<PassportDto> findAllUnavailablePassports() {
         Timestamp dateExpired = new Timestamp(System.currentTimeMillis());
-        return passportRepository.findAllUnavailablePassports(dateExpired).stream().collect(Collectors.toList());
+        Collection<PassportEntity> rsl =  passportRepository.findAllUnavailablePassports(dateExpired);
+        return rsl.stream()
+                .map(converterPassport::convertPassportEntityToPassportDto).collect(Collectors.toList());
     }
 
-    public List<PassportEntity> findAllReplaceablePassports() {
+    public List<PassportDto> findAllReplaceablePassports() {
         LocalDateTime localDateTime = LocalDateTime.now();
         localDateTime = localDateTime.plusMonths(3);
         Timestamp dateExpired = Timestamp.valueOf(localDateTime);
-        return passportRepository.findAllUnavailablePassports(dateExpired).stream().collect(Collectors.toList());
+        return passportRepository.findAllUnavailablePassports(dateExpired).stream()
+                .map(converterPassport::convertPassportEntityToPassportDto).collect(Collectors.toList());
     }
 
-    public PassportEntity createPassport(PassportEntity passportEntity) {
-        return passportRepository.save(passportEntity);
+    public PassportDto createPassport(PassportEntity passportEntity) {
+        PassportEntity entity = passportRepository.save(passportEntity);
+        return converterPassport.convertPassportEntityToPassportDto(entity);
     }
 
     public PassportEntity updatePassportById(Long id, PassportDto passportDto) {
