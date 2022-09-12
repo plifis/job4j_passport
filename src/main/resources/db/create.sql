@@ -1,4 +1,5 @@
-create database passports;
+create
+database passports;
 
 create table passports
 (
