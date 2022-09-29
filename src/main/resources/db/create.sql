@@ -1,5 +1,3 @@
-create
-database passports;
 
 create table passports
 (
