@@ -11,5 +11,5 @@ docker build -t passports .
 3. и запустить docker-compose командо:
 docker-compose up
 
-![Screenshot](images/passport_1.PNG)
-![Screenshot](images/passport_2.PNG)
+![Screenshot](images/passport_1.png)
+![Screenshot](images/passport_2.png)
